@@ -35,28 +35,42 @@ npm run dist             # 产出 NSIS 安装包到 build/（含 latest.yml 更�
 
 ## 三、发布与自动更新
 
-### 1. 准备 GitHub 仓库
+### 方式 A：GitHub Actions 自动发布（推荐）
 
-创建仓库（例如 `dsh-desktop`），然后在 `package.json` 的 `build.publish` 中填写你的用户名：
+仓库已内置 `.github/workflows/release.yml`：**推送一个版本标签（如 `v0.1.4`）到 GitHub 后，
+云端自动构建 Windows 安装包并创建 Release，无需本地 Token**。已安装的应用会自动检出并静默更新。
 
-```json
-"publish": { "provider": "github", "owner": "<你的GitHub用户名>", "repo": "dsh-desktop" }
-```
+首次使用步骤：
 
-### 2. 升级内嵌 dsh 并发布新版本
+1. 在 GitHub 网页上创建一个空仓库，例如 `dsh-desktop`（不要勾选任何初始化文件）。
+2. 在 `package.json` 的 `build.publish` 中填写你的用户名：
+   ```json
+   "publish": { "provider": "github", "owner": "<你的GitHub用户名>", "repo": "dsh-desktop" }
+   ```
+3. 关联并推送：
+   ```powershell
+   git remote add origin https://github.com/<你的GitHub用户名>/dsh-desktop.git
+   git push -u origin main
+   ```
+4. 以后每次发新版本：
+   ```powershell
+   npm run runtime                       # 拉取 @deepseek-ai/dsh@latest 到 resources/dsh
+   # 修改 package.json 中的 version（例如 0.1.4）
+   git add -A && git commit -m "v0.1.4"
+   git tag v0.1.4 && git push origin main --tags
+   ```
+   Actions 跑完（约 5–10 分钟），应用启动 10 秒后自动下载安装新版本并重启。
 
-每次想升级 dsh（或改代码）时：
+### 方式 B：本地 Token 一键发布
 
 ```powershell
 npm run runtime                       # 拉取 @deepseek-ai/dsh@latest 到 resources/dsh
-# 修改 package.json 中的 version（例如 0.1.1）
-$env:GH_TOKEN = "<你的GitHub Token>"
+# 修改 package.json 中的 version
+$env:GH_TOKEN = "<你的GitHub Token（repo 权限）>"
 npm run publish                       # 构建并自动创建 GitHub Release 并上传安装包
 ```
 
-应用下次启动（或 4 小时后，或托盘"检查更新"）即可检出并自动安装新版本。
-
-> Token 需要 `repo` 权限。若不想自动建 Release，可改用 `npm run dist` 后手动上传 `build/` 下的
+> 若不想自动建 Release，可改用 `npm run dist` 后手动上传 `dist/` 下的
 > `DSH-Desktop-x.y.z-setup.exe`、`latest.yml`、`latest.yml.blockmap` 到 Release 资产。
 
 ### 3. 本地测试更新链路（不依赖 GitHub）
