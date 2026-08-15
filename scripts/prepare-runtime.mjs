@@ -73,6 +73,20 @@ async function resolveLatestNodeVersion() {
   return m[1];
 }
 
+/** 递归查找文件 */
+function findFile(dir, name) {
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const found = findFile(full, name);
+      if (found) return found;
+    } else if (entry.name === name) {
+      return full;
+    }
+  }
+  return null;
+}
+
 async function ensureNodeRuntime(version) {
   const zipName = `node-v${version}-win-x64.zip`;
   const zipPath = path.join(cacheDir, zipName);
@@ -94,13 +108,18 @@ async function ensureNodeRuntime(version) {
   rmSync(tmp, { recursive: true, force: true });
   mkdirSync(tmp, { recursive: true });
   log("解压 Node …");
-  const tar = spawnSync("tar", ["-xf", zipPath, "-C", tmp], { stdio: "inherit" });
-  if (tar.status !== 0) throw new Error("tar 解压失败");
-  const inner = readdirSync(tmp).find((d) => d.startsWith("node-v"));
-  if (!inner) throw new Error("解压目录结构异常");
+  // 用 PowerShell Expand-Archive 解压（本地与 CI 行为一致，不依赖 tar 的实现差异）
+  const ps = spawnSync(
+    "powershell.exe",
+    ["-NoProfile", "-Command", `Expand-Archive -LiteralPath '${zipPath}' -DestinationPath '${tmp}' -Force`],
+    { stdio: "inherit" }
+  );
+  if (ps.status !== 0) throw new Error("Expand-Archive 解压失败");
+  const nodeExePath = findFile(tmp, "node.exe");
+  if (!nodeExePath) throw new Error("解压结果中找不到 node.exe");
   rmSync(nodeDir, { recursive: true, force: true });
   const { renameSync } = await import("node:fs");
-  renameSync(path.join(tmp, inner), nodeDir);
+  renameSync(path.dirname(nodeExePath), nodeDir);
   rmSync(tmp, { recursive: true, force: true });
   log(`Node 就绪：${path.join(nodeDir, "node.exe")}`);
 }
