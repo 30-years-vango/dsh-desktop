@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+build/
+dist/
+resources/node/
+resources/dsh/
+resources/icon.ico
+src/assets/
+npm-debug.log*

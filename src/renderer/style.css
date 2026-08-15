@@ -1,0 +1,59 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+  font-size: 14px;
+  padding: 20px 24px 32px;
+}
+header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.logo { width: 44px; height: 44px; border-radius: 10px; }
+h1 { font-size: 18px; margin: 0; }
+header p { margin: 2px 0 0; color: #94a3b8; font-size: 12px; }
+section {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: #7dd3fc; margin: 0 0 12px; }
+table.kv { width: 100%; border-collapse: collapse; }
+table.kv td { padding: 5px 0; border-bottom: 1px dashed #334155; }
+table.kv td:first-child { color: #94a3b8; width: 70px; }
+label { display: block; margin-bottom: 14px; color: #cbd5e1; }
+label small { display: block; color: #64748b; margin-top: 4px; font-size: 12px; }
+label.check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+input[type="text"], input[type="number"] {
+  width: 100%;
+  margin-top: 6px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  color: #e2e8f0;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+input[type="checkbox"] { accent-color: #0d9488; width: 16px; height: 16px; }
+.row { display: flex; gap: 8px; align-items: center; }
+.row input { flex: 1; }
+button {
+  background: #1e293b; color: #e2e8f0; border: 1px solid #334155;
+  border-radius: 8px; padding: 8px 16px; font-size: 13px; cursor: pointer;
+}
+button.primary { background: #0d9488; border-color: #0d9488; color: #fff; }
+button.small { padding: 8px 12px; }
+button.ghost { background: transparent; }
+button.danger { color: #f87171; border-color: #7f1d1d; }
+button:hover { filter: brightness(1.15); }
+.actions { display: flex; gap: 10px; margin-top: 6px; }
+.muted { color: #94a3b8; font-size: 13px; }
+.progress {
+  margin-top: 10px; height: 8px; background: #0f172a;
+  border-radius: 4px; overflow: hidden; border: 1px solid #334155;
+}
+.bar { height: 100%; width: 0%; background: #2dd4bf; transition: width 0.2s; }
+footer { display: flex; justify-content: space-between; margin-top: 6px; }
+.hidden { display: none; }

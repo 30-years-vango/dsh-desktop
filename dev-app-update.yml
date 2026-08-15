@@ -1,0 +1,5 @@
+# 开发/测试用更新源：本地 generic feed（配合 scripts/serve-local-feed.mjs 使用）。
+# 打包后的正式更新源由 electron-builder 从 package.json 的 build.publish 自动生成 app-update.yml。
+provider: generic
+url: http://127.0.0.1:8080
+updaterCacheDirName: dsh-desktop-updater

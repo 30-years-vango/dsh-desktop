@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>DSH Desktop 设置</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <img src="../assets/icon.png" alt="" class="logo" />
+      <div>
+        <h1>DSH Desktop</h1>
+        <p id="verLine">加载中…</p>
+      </div>
+    </header>
+
+    <section>
+      <h2>服务器状态</h2>
+      <table class="kv">
+        <tr><td>状态</td><td id="srvState">…</td></tr>
+        <tr><td>模式</td><td id="srvMode">…</td></tr>
+        <tr><td>地址</td><td id="srvUrl">…</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>设置</h2>
+      <form id="settingsForm">
+        <label>服务器端口
+          <input type="number" id="inPort" min="1" max="65535" />
+          <small>修改后自动重启服务器</small>
+        </label>
+        <label>工作目录（默认启动目录）
+          <div class="row">
+            <input type="text" id="inWorkdir" />
+            <button type="button" class="small" id="btnWorkdir">选择…</button>
+          </div>
+        </label>
+        <label>DSH_HOME（用户数据目录）
+          <div class="row">
+            <input type="text" id="inDshHome" />
+            <button type="button" class="small" id="btnDshHome">选择…</button>
+          </div>
+          <small>会话、配置、存储都保存在这里</small>
+        </label>
+        <label class="check"><input type="checkbox" id="inCloseToTray" /> 关闭窗口时最小化到托盘</label>
+        <label class="check"><input type="checkbox" id="inAutoUpdate" /> 自动检查更新（每 4 小时）</label>
+        <div class="actions">
+          <button type="submit" class="primary">保存</button>
+          <button type="button" id="btnRestart">重启服务器</button>
+        </div>
+      </form>
+    </section>
+
+    <section>
+      <h2>自动更新</h2>
+      <div class="row">
+        <button type="button" id="btnUpdate" class="primary">检查更新</button>
+        <span id="updateText" class="muted">—</span>
+      </div>
+      <div class="progress hidden" id="updateProgress">
+        <div class="bar" id="updateBar"></div>
+      </div>
+    </section>
+
+    <footer>
+      <button type="button" class="ghost" id="btnLogs">打开日志目录</button>
+      <button type="button" class="ghost danger" id="btnQuit">退出应用</button>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

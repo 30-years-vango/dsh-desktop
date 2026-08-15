@@ -1,0 +1,45 @@
+name: 发布新版本（自动构建 + 创建 GitHub Release）
+
+# 推送形如 v0.1.4 的标签时触发，云端自动构建 Windows 安装包并发布，
+# 已安装的桌面应用会自动检出并静默更新。
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write # 创建 Release 与上传安装包
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 安装构建依赖
+        run: npm ci --no-audit --no-fund
+
+      - name: 准备运行时（下载 Node 便携版 + 安装 @deepseek-ai/dsh）
+        run: npm run runtime
+
+      - name: 生成应用图标
+        run: npm run icon
+
+      # 把 publish 的 owner/repo 写成当前仓库，使打包出的 app-update.yml 指向本仓库 Release
+      - name: 写入仓库信息到 publish 配置
+        shell: pwsh
+        run: |
+          $pkg = Get-Content package.json -Raw | ConvertFrom-Json
+          $pkg.build.publish.owner = "${{ github.repository_owner }}"
+          $pkg.build.publish.repo = "${{ github.event.repository.name }}"
+          $pkg | ConvertTo-Json -Depth 12 | Set-Content package.json -Encoding utf8
+
+      - name: 构建 NSIS 安装包并发布到 GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win nsis --publish always
