@@ -133,9 +133,11 @@ function installDshBundle() {
     writeFileSync(manifest, JSON.stringify({ name: "dsh-bundle", private: true, version: "0.0.0" }, null, 2));
   }
   log("安装 @deepseek-ai/dsh@latest 到 resources/dsh …（可能需要几分钟）");
+  // shell:true —— Windows 上 npm.cmd 是批处理，Node 的 spawnSync 需经 cmd.exe 才能执行
   const r = spawnSync("npm.cmd", ["install", "@deepseek-ai/dsh@latest", "--no-audit", "--no-fund", "--cache", npmCache], {
     cwd: dshDir,
     stdio: "inherit",
+    shell: true,
     env: { ...process.env, npm_config_cache: npmCache },
   });
   if (r.status !== 0) throw new Error("npm install 失败");
