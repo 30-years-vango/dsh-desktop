@@ -118,6 +118,8 @@ async function ensureNodeRuntime(version) {
   const nodeExePath = findFile(tmp, "node.exe");
   if (!nodeExePath) throw new Error("解压结果中找不到 node.exe");
   rmSync(nodeDir, { recursive: true, force: true });
+  // CI 上 resources/ 可能不存在（目录内文件均为 gitignore），先建父目录再重命名
+  mkdirSync(path.dirname(nodeDir), { recursive: true });
   const { renameSync } = await import("node:fs");
   renameSync(path.dirname(nodeExePath), nodeDir);
   rmSync(tmp, { recursive: true, force: true });
